@@ -44,17 +44,19 @@ const Home = () => {
   };
 
   const NextSong = () => {
-    setCurrentSong((currentSong + 1) % songs.length);
+    const newIndex = (currentSong + 1) % songs.length;
+    setCurrentSong(newIndex);
     document.querySelectorAll('li').forEach((element) => element.classList.remove('active'));
-    document.getElementById(`song-${currentSong}`).classList.add('active');
-    playSongs(songs[currentSong].url);
+    document.getElementById(`song-${newIndex}`).classList.add('active');
+    playSongs(songs[newIndex].url);
   };
 
   const PreviousSong = () => {
-    setCurrentSong((currentSong - 1 + songs.length) % songs.length);
+    const newIndex = (currentSong - 1 + songs.length) % songs.length;
+    setCurrentSong(newIndex);
     document.querySelectorAll('li').forEach((element) => element.classList.remove('active'));
-    document.getElementById(`song-${currentSong}`).classList.add('active');
-    playSongs(songs[currentSong].url);
+    document.getElementById(`song-${newIndex}`).classList.add('active');
+    playSongs(songs[newIndex].url);
   };
 
   return (
