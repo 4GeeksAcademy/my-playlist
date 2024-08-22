@@ -7,7 +7,6 @@ const Home = () => {
   const [currentSong, setCurrentSong] = useState(0);
   const ActualSong = useRef();
 
-
   const SongList = () => {
     fetch('https://playground.4geeks.com/sound/songs')
       .then(response => response.json())
@@ -15,16 +14,16 @@ const Home = () => {
       .catch(error => console.error('Error:', error));
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     SongList()
-  },[]
+  }, []
   );
 
   const playSongs = (url) => {
-	ActualSong.current.src = `https://playground.4geeks.com${url}`;   
-	ActualSong.current.play();
+    ActualSong.current.src = `https://playground.4geeks.com${url}`;
+    ActualSong.current.load(); 
+    ActualSong.current.play();
     setIsPlaying(true);
-	console.log(url);
   };
 
   const handlePlayPause = () => {
@@ -37,37 +36,48 @@ const Home = () => {
     }
   };
 
+  const handleClick = (index) => {
+    document.querySelectorAll('li').forEach((element) => element.classList.remove('active'));
+    document.getElementById(`song-${index}`).classList.add('active');
+    setCurrentSong(index);
+    playSongs(songs[index].url);
+  };
+
   const NextSong = () => {
-	setCurrentSong((currentSong) => (currentSong + 1) % songs.length);
-	SongList(songs[currentSong].url);
+    setCurrentSong((currentSong + 1) % songs.length);
+    document.querySelectorAll('li').forEach((element) => element.classList.remove('active'));
+    document.getElementById(`song-${currentSong}`).classList.add('active');
+    playSongs(songs[currentSong].url);
   };
 
   const PreviousSong = () => {
-	setCurrentSong((currentSong) => (currentSong - 1 + songs.length) % songs.length);
-	 SongList(songs[currentSong].url);
+    setCurrentSong((currentSong - 1 + songs.length) % songs.length);
+    document.querySelectorAll('li').forEach((element) => element.classList.remove('active'));
+    document.getElementById(`song-${currentSong}`).classList.add('active');
+    playSongs(songs[currentSong].url);
   };
-  
+
   return (
     <div className="container" >
       <h1>Songs List:</h1>
       <ul>
-        {songs.map((song) => (
-          <li key={song.id} onClick={() => playSongs(song.url)}>{song.name}</li>
+        {songs.map((song, index) => (
+          <li key={song.id} id={`song-${index}`} onClick={() => handleClick(index)}>{song.name}</li>
         ))}
       </ul>
-      <audio src= "" ref={ActualSong}></audio>
-	  
-	  <button onClick={PreviousSong}>
-		{/* poner el iconito de fontawesome */}
-	  </button>
+      <audio src="" ref={ActualSong}></audio>
+
+      <button className="btn fa-solid fa-square-caret-left" onClick={PreviousSong}>
+
+      </button>
 
       <button onClick={handlePlayPause}>
         {isPlaying ? 'Pause' : 'Play'}
       </button>
 
-	  <button onClick={NextSong}>
-		{/* poner el iconito de fontawesome */}
-	  </button>
+      <button className="btn fa-solid fa-square-caret-right" onClick={NextSong}>
+
+      </button>
 
     </div>
   );
